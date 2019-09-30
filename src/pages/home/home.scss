@@ -1,0 +1,34 @@
+page-home {
+    .container {
+        position: relative;
+        text-align: center;
+        color: rgb(255, 255, 255);
+        font-size: 45pt;
+        background-image: linear-gradient(to bottom, #054A60,#166680,#277993);
+        height: 100%;
+      }
+      
+      //button
+      .bottom-left {
+        position: absolute;
+        bottom: 10%;
+        left: 20%;
+        color: white;
+      }
+      
+      //title
+      .top-left {
+        position: absolute;
+        top: 10%;
+        left: 18%;
+      }
+
+      img{
+        opacity: 0.4;
+        height: 100%;
+    }
+
+    
+      
+      
+}

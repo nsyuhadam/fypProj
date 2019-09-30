@@ -1,0 +1,7 @@
+{
+  "name": "fypProj",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "ionic-angular"
+}
