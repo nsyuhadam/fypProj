@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ToastController, normalizeURL } from 'ionic-angular';
-import { ImagePicker } from '@ionic-native/image-picker/ngx';
-import { FirebaseService } from '../service/firebaseservice';
-
-
+import { IonicPage, NavController, NavParams, ToastController, AlertController } from 'ionic-angular';
+import { Camera } from "ionic-native";
+import { AngularFireStorage } from "@angular/fire/storage";
+import { AngularFireAuth } from "@angular/fire/auth";
+  
 
 /**
  * Generated class for the UploadPicPage page.
@@ -18,83 +18,57 @@ import { FirebaseService } from '../service/firebaseservice';
   templateUrl: 'upload-pic.html',
 })
 export class UploadPicPage {
-  
+  picdata: any
+  picurl: any
+  mypicref: any
 
-  constructor(public imagePicker: ImagePicker, public toastCtrl: ToastController, public firebaseService: FirebaseService, public navCtrl: NavController, public navParams: NavParams) {
+  constructor(private firebasestore: AngularFireStorage, private firebaseauth: AngularFireAuth, public alertctrl: AlertController,public toastCtrl: ToastController, public navCtrl: NavController, public navParams: NavParams) {
+    this.mypicref=firebasestore.storage.ref('/')
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad UploadPicPage');
   }
 
-  /*openImagePickerCrop(){
-    this.imagePicker.hasReadPermission().then(
-      (result) => {
-        if(result == false){
-          // no callbacks required as this opens a popup which returns async
-          this.imagePicker.requestReadPermission();
-        }
-        else if(result == true){
-          this.imagePicker.getPictures({
-            maximumImagesCount: 1
-          }).then(
-            (results) => {
-              for (var i = 0; i < results.length; i++) {
-                this.cropService.crop(results[i], {quality: 75}).then(
-                  newImage => {
-                    this.uploadImageToFirebase(newImage);
-                  },
-                  error => console.error("Error cropping image", error)
-                );
-              }
-            }, (err) => console.log(err)
-          );
-        }
-      }, (err) => {
-        console.log(err);
-      });
-  }*/
-
-  openImagePicker(){
-    this.imagePicker.hasReadPermission().then(
-      (result) => {
-        if(result == false){
-          // no callbacks required as this opens a popup which returns async
-          this.imagePicker.requestReadPermission();
-        }
-        else if(result == true){
-          this.imagePicker.getPictures({
-            maximumImagesCount: 1
-          }).then(
-            (results) => {
-              for (var i = 0; i < results.length; i++) {
-                this.uploadImageToFirebase(results[i]);
-              }
-            }, (err) => console.log(err)
-          );
-        }
-      }, (err) => {
-        console.log(err);
-        console.log("issues here");
-      });
+  takePicture(){
+    Camera.getPicture({
+      quality:100,
+      destinationType:Camera.DestinationType.DATA_URL,
+      sourceType: Camera.PictureSourceType.CAMERA,
+      encodingType:Camera.EncodingType.PNG,
+      saveToPhotoAlbum:true
+    }).then(imagedata => {
+      this.picdata=imagedata;
+      this.upload();
+    })
   }
 
-  uploadImageToFirebase(image){
-    image = normalizeURL(image);
-
-    //uploads img to firebase storage
-    this.firebaseService.uploadImage(image)
-    .then(photoURL => {
-      
-      let toast = this.toastCtrl.create({
-        message: 'Image was updated successfully',
-        duration: 3000
-      });
-      toast.present();
+  upload(){
+    this.firebaseauth.authState.take(1).subscribe(auth => {
+     this.mypicref.child('images').child(`${auth.uid}`).child(this.uid())
+      .putString(this.picdata,'base64', {contentType:'image/png'})
+      .then (savepic =>{
+        this.picurl=savepic.taskSnapshot.getDownloadUrl();
       })
+        
+        let alert= this.alertctrl.create({
+          title: 'Success',
+          subTitle: 'Photo uploaded!',
+          buttons: ['OK']
+        });
+        alert.present();
+    })
+
   }
 
-  
-    
+  uid(){
+    var d = new Date().getTime();
+    var uuid = 'xxxxxxxx-xxxx-4xxx-yxxx'.replace(/[xy]/g, function (c) {
+      var r = (d + Math.random() * 16) % 16 | 0;
+      d = Math.floor(d / 16);
+      return (c == 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+    return uuid;
+  }
 
 }
