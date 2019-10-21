@@ -17,7 +17,11 @@
     <p>Age: {{(profileData | async)?.age}}</p>
     <p>Phone Number: {{(profileData | async)?.phonenumber}}</p> 
 
-    <button ion-button block (click)="openEditProfile()">Edit Profile</button>
+    <button ion-button block (click)="openEditProfile(profileData)">Edit Profile</button>
+
+    <div>
+      <img src="{{retPic}}">
+    </div>
 
     
     
