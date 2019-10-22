@@ -3,9 +3,11 @@ import { IonicPage, NavController, NavParams, ToastController, AlertController }
 import { Camera } from "ionic-native";
 import { AngularFireStorage, AngularFireStorageReference} from "@angular/fire/storage";
 import { AngularFireAuth } from "@angular/fire/auth";
+import { AngularFireDatabase } from "@angular/fire/database";
 import { finalize, take } from 'rxjs/operators';
 import 'rxjs/add/operator/take'; 
 import { Observable } from 'rxjs';
+import { DashboardPage } from '../dashboard/dashboard';
 
   
 
@@ -23,12 +25,11 @@ import { Observable } from 'rxjs';
 })
 export class UploadPicPage {
   picdata: any
-  picurl: Observable<string>;
+  picurl: any
   mypicref: any
-  picref: any
-  
+  retPic: any;
 
-  constructor(private firebasestore: AngularFireStorage, private firebaseauth: AngularFireAuth, public alertctrl: AlertController,public toastCtrl: ToastController, public navCtrl: NavController, public navParams: NavParams) {
+  constructor(private firebasestore: AngularFireStorage, private firebaseauth: AngularFireAuth, private firebasedb: AngularFireDatabase, public alertctrl: AlertController,public toastCtrl: ToastController, public navCtrl: NavController, public navParams: NavParams) {
     this.mypicref=firebasestore.storage.ref('/')
     
   }
@@ -37,6 +38,7 @@ export class UploadPicPage {
     console.log('ionViewDidLoad UploadPicPage');
   }
 
+  //take photo from camera
   takePicture(){
     Camera.getPicture({
       quality:100,
@@ -50,7 +52,7 @@ export class UploadPicPage {
     })
   }
 
-  //check youtube videos if this is correct
+  //choose existing photos from gallery
   choosefrmGallery(){
     Camera.getPicture({
       quality:100,
@@ -63,9 +65,12 @@ export class UploadPicPage {
     })
   }
 
+  /*upload the selected photos to firebase storage
+    save the downloadurl of each image to db according to uid*/
   upload(){
+    const picid=this.uid();
     this.firebaseauth.authState.pipe(take(1)).subscribe(auth => {
-      this.mypicref.child('images').child(`${auth.uid}`).child(this.uid())
+      const path=this.mypicref.child('images').child(`${auth.uid}`).child(picid)
         .putString(this.picdata, 'base64', { contentType: 'image/png' })
         .then(() => {
           let alert= this.alertctrl.create({
@@ -74,21 +79,38 @@ export class UploadPicPage {
             buttons: ['OK']
           });
           alert.present();
+
+        //get download url for uploaded pic 
+        const picref=this.firebasestore.ref('images/' + this.firebaseauth.auth.currentUser.uid + '/'+ picid);
+        this.picurl=picref.getDownloadURL().toPromise().then((url) => {
+        this.retPic=url;
+        console.log(this.retPic);
+
+        /*push img node to db, each contain node for each user and that node holds url for images
+        img
+        |-- userid
+        |    |--- picid: "url"
+        |    |--- picid: "url"
+        |-- userid
+        |    |--- picid: "url"
+        |    |--- picid: "url"
+        
+        */
+        this.firebasedb.object(`img/${auth.uid}/${picid}`).set(this.retPic)
+        .then(() => this.navCtrl.setRoot(DashboardPage));
+        
+        });
+          
         })
         .catch(error => {
           console.log("Error:", error);
+          let alert= this.alertctrl.create({
+            title: 'Failure',
+            subTitle: 'Picture fail to upload!',
+            buttons: ['OK']
+          });
+          alert.present();
         })
-        
-     //this.picurl=imgref.getDownloadURL()
-        /*.then(savepic => {
-          this.picurl = savepic.getDownloadURL();
-          console.log("Pic saved successfully");
-        })*/
-
-        //console.log(this.picurl);
-      /*const picref=this.firebasestore.ref('images/WDNnDiZbMGNmFj3vnvX5eZMSedB3/ fe27f164-4fe3-42d8-b46f');
-      this.picurl=picref.getDownloadURL();
-      console.log(this.picurl);*/
     })
   }
 
