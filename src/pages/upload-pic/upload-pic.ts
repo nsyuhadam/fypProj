@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, ToastController, AlertController } from 'ionic-angular';
+import { Component, ViewChild} from '@angular/core';
+import { IonicPage, NavController, NavParams, ToastController, AlertController, Tabs } from 'ionic-angular';
 import { Camera } from "ionic-native";
 import { AngularFireStorage, AngularFireStorageReference} from "@angular/fire/storage";
 import { AngularFireAuth } from "@angular/fire/auth";
@@ -8,6 +8,7 @@ import { finalize, take } from 'rxjs/operators';
 import 'rxjs/add/operator/take'; 
 import { Observable } from 'rxjs';
 import { DashboardPage } from '../dashboard/dashboard';
+import { MainTabPage } from '../main-tab/main-tab';
 
   
 
@@ -24,6 +25,7 @@ import { DashboardPage } from '../dashboard/dashboard';
   templateUrl: 'upload-pic.html',
 })
 export class UploadPicPage {
+  @ViewChild('baseTabs') tabRef: Tabs
   picdata: any
   picurl: any
   mypicref: any
@@ -45,7 +47,9 @@ export class UploadPicPage {
       destinationType:Camera.DestinationType.DATA_URL,
       sourceType: Camera.PictureSourceType.CAMERA,
       encodingType:Camera.EncodingType.PNG,
-      saveToPhotoAlbum:true
+      saveToPhotoAlbum:true,
+      targetWidth: 1080,
+      targetHeight: 1080
     }).then(imagedata => {
       this.picdata=imagedata;
       this.upload();
@@ -59,6 +63,8 @@ export class UploadPicPage {
       destinationType:Camera.DestinationType.DATA_URL,
       sourceType: Camera.PictureSourceType.PHOTOLIBRARY,
       encodingType:Camera.EncodingType.PNG,
+      targetWidth: 1080,
+      targetHeight: 1080
     }).then(imagedata => {
       this.picdata=imagedata;
       this.upload();
@@ -76,7 +82,13 @@ export class UploadPicPage {
           let alert= this.alertctrl.create({
             title: 'Success',
             subTitle: 'Picture uploaded successfully!',
-            buttons: ['OK']
+            buttons: [{
+              text: 'OK',
+              handler:() => {
+                this.firebasedb.object(`img/${auth.uid}/${picid}`).set(this.retPic)
+                  .then(() => this.navCtrl.parent.select(0));
+              }
+            }]
           });
           alert.present();
 
@@ -89,21 +101,20 @@ export class UploadPicPage {
         /*push img node to db, each contain node for each user and that node holds url for images
         img
         |-- userid
-        |    |--- picid: "url"
-        |    |--- picid: "url"
-        |-- userid
-        |    |--- picid: "url"
-        |    |--- picid: "url"
+        |    |--- picid
+             |       |-- url: "firebaseimageurl"
+             |--- picid
+                   |-- url: "firebaseimageurl"
         
         */
-        this.firebasedb.object(`img/${auth.uid}/${picid}`).set(this.retPic)
-        .then(() => this.navCtrl.setRoot(DashboardPage));
+         
+        
         
         });
           
         })
         .catch(error => {
-          console.log("Error:", error);
+          console.log("Error: ", error);
           let alert= this.alertctrl.create({
             title: 'Failure',
             subTitle: 'Picture fail to upload!',

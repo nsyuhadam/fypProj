@@ -19,8 +19,10 @@
 
     <button ion-button block (click)="openEditProfile(profileData)">Edit Profile</button>
 
-    <div>
-      <img src="{{retPic}}">
+    <div *ngFor="let item of pic">
+      <!-- if photo hasn't been displayed then display -->
+          <img src="{{item}}">
+          <p></p>
     </div>
 
     

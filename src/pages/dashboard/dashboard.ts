@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { EditProfilePage } from '../edit-profile/edit-profile';
 import { database } from 'firebase';
 import { Profile } from "../../models/profile";
+import { Picture } from "../../models/pic";
 
 
 @Component({
@@ -19,9 +20,11 @@ export class DashboardPage {
   profile= {} as Profile;
   profileData: Observable <any>
   profileId: string;
-  pic: any
-  retPic: any
+  pic: string[]
+  
+  
   constructor(private firebasestore: AngularFireStorage,private firebaseauth: AngularFireAuth, private firebasedb: AngularFireDatabase, private toast: ToastController,public navCtrl: NavController, public navParams: NavParams) {
+    
   }
 
   ionViewDidLoad() {
@@ -35,6 +38,19 @@ export class DashboardPage {
 
         this.profileData= this.firebasedb.object(`profile/${data.uid}`).valueChanges();
         this.profileId=data.uid;
+
+        //this.pic=this.firebasedb.object(`img/${data.uid}`).valueChanges();
+        
+        let retPic : Array<string> = [];
+        this.firebasedb.database.ref('img').child(data.uid).on('value',(snapshot) => {
+          snapshot.forEach((child) => {
+            console.log(child.key, child.val());
+            var length=retPic.push(child.val());
+            console.log("array length: " + length);
+            
+          })
+          this.pic=retPic;
+        })
         
       }
       else {
@@ -45,19 +61,14 @@ export class DashboardPage {
       }
     })
 
-    const picref=this.firebasestore.ref('images/' + this.firebaseauth.auth.currentUser.uid+ '/dfb2dc4a-39cc-4f1e-9f30');
+    
+    
+    
+    /*const picref=this.firebasestore.ref('images/' + this.firebaseauth.auth.currentUser.uid+ '/dfb2dc4a-39cc-4f1e-9f30');
     this.pic=picref.getDownloadURL().toPromise().then((url) => {
       this.retPic=url;
       console.log(url);
-    });
-    console.log(this.pic);
-    //.child(this.firebaseauth.auth.currentUser.uid);
-    
-  /*const picref= this.firebasestore.ref('images/WDNnDiZbMGNmFj3vnvX5eZMSedB3/dfb2dc4a-39cc-4f1e-9f30');
-    this.pic=picref.getDownloadURL();
-    console.log(this.pic);*/
-
-    
+    });*/
   }
 
 
