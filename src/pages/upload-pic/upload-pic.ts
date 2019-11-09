@@ -85,6 +85,7 @@ export class UploadPicPage {
             buttons: [{
               text: 'OK',
               handler:() => {
+                //save link to db
                 this.firebasedb.object(`img/${auth.uid}/${picid}`).set(this.retPic)
                   .then(() => this.navCtrl.parent.select(0));
               }

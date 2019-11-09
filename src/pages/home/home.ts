@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { RegisterPage } from '../register/register';
 import { LoginPage } from '../login/login';
+import { ExplorePage } from '../explore/explore';
 
 /**
  * Generated class for the HomePage page.
@@ -26,5 +27,9 @@ export class HomePage {
  
   gotoLogin(){
     this.navCtrl.push(LoginPage);
+  }
+
+  gotoExplore(){
+    this.navCtrl.push(ExplorePage);
   }
 }

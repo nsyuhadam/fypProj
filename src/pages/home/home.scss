@@ -11,8 +11,8 @@ page-home {
       //button
       .bottom-left {
         position: absolute;
-        bottom: 10%;
-        left: 20%;
+        bottom: 5%;
+        left: 27%;
         color: white;
       }
       
@@ -20,12 +20,17 @@ page-home {
       .top-left {
         position: absolute;
         top: 10%;
-        left: 18%;
+        left: 28%;
       }
 
       img{
         opacity: 0.4;
         height: 100%;
+    }
+
+    p{
+      font-size: 12pt;
+      margin-bottom: 0px;
     }
 
     

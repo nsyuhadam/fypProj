@@ -1,7 +1,8 @@
 export interface Profile{
-    key: string;
+    $key?:string,
     firstname: string;
     lastname: string;
-    age: string;
+    username: string;
+    address: string;
     phonenumber: string;
 }

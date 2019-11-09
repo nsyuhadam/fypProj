@@ -7,9 +7,11 @@ import { AngularFireModule} from '@angular/fire';
 import { AngularFireAuthModule } from "@angular/fire/auth";
 import { AngularFireStorageModule } from "@angular/fire/storage";
 import { FirebaseService } from "../pages/service/firebaseservice";
-import { ImagePicker } from '@ionic-native/image-picker/ngx';
+import { Geolocation } from "@ionic-native/geolocation";
+import { NativeGeocoder } from "@ionic-native/native-geocoder";
 
-//importsss  
+
+//imports
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import {LoginPage} from '../pages/login/login';
@@ -20,6 +22,7 @@ import { ProfilePage } from "../pages/profile/profile";
 import { UploadPicPage } from "../pages/upload-pic/upload-pic";
 import { MainTabPage } from "../pages/main-tab/main-tab";
 import { NotificationPage } from "../pages/notification/notification";
+import { ExplorePage } from "../pages/explore/explore";
 
 
 
@@ -39,7 +42,8 @@ import { AngularFireDatabaseModule } from '@angular/fire/database';
     ProfilePage,
     UploadPicPage,
     MainTabPage,
-    NotificationPage
+    NotificationPage,
+    ExplorePage
     
     
   ],
@@ -64,13 +68,16 @@ import { AngularFireDatabaseModule } from '@angular/fire/database';
     ProfilePage,
     UploadPicPage,
     MainTabPage,
-    NotificationPage
+    NotificationPage,
+    ExplorePage
+    
   ],
   providers: [
     StatusBar,
     SplashScreen,
-    ImagePicker,
     FirebaseService,
+    Geolocation,
+    NativeGeocoder,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
    
     
