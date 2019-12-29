@@ -12,9 +12,9 @@
   </ion-header>
 
   <ion-content padding>
+    <p>Username: {{(profileData | async)?.username}}</p>
     <p>First Name: {{(profileData | async)?.firstname}}</p>
-    <p>Last name: {{(profileData | async)?.lastname}}</p>
-    <p>Age: {{(profileData | async)?.age}}</p>
+    <p>Address: {{(profileData | async)?.address}}</p>
     <p>Phone Number: {{(profileData | async)?.phonenumber}}</p> 
 
     <button ion-button block (click)="openEditProfile(profileData)">Edit Profile</button>

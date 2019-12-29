@@ -11,7 +11,7 @@ import { Geolocation } from "@ionic-native/geolocation";
 import { NativeGeocoder } from "@ionic-native/native-geocoder";
 
 
-//imports
+//pages
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import {LoginPage} from '../pages/login/login';
@@ -23,7 +23,10 @@ import { UploadPicPage } from "../pages/upload-pic/upload-pic";
 import { MainTabPage } from "../pages/main-tab/main-tab";
 import { NotificationPage } from "../pages/notification/notification";
 import { ExplorePage } from "../pages/explore/explore";
-
+import { UserTabPage } from "../pages/user-tab/user-tab";
+import { BookingPage } from "../pages/booking/booking";
+import { PhProfilePage } from "../pages/ph-profile/ph-profile";
+import { LocationPage } from "../pages/location/location";
 
 
 import { FIREBASE_CREDENTIALS } from "./firebase.credential";
@@ -43,7 +46,11 @@ import { AngularFireDatabaseModule } from '@angular/fire/database';
     UploadPicPage,
     MainTabPage,
     NotificationPage,
-    ExplorePage
+    ExplorePage,
+    UserTabPage,
+    BookingPage,
+    PhProfilePage,
+    LocationPage
     
     
   ],
@@ -69,7 +76,11 @@ import { AngularFireDatabaseModule } from '@angular/fire/database';
     UploadPicPage,
     MainTabPage,
     NotificationPage,
-    ExplorePage
+    ExplorePage,
+    UserTabPage,
+    BookingPage,
+    PhProfilePage,
+    LocationPage
     
   ],
   providers: [

@@ -4,11 +4,8 @@ import { AngularFireDatabase } from "@angular/fire/database";
 import { AngularFireAuth } from "@angular/fire/auth";
 import { AngularFireStorage } from "@angular/fire/storage";
 import { Observable } from 'rxjs';
-//import { ProfilePage } from '../profile/profile';
-import { EditProfilePage } from '../edit-profile/edit-profile';
-import { database } from 'firebase';
 import { Profile } from "../../models/profile";
-import { Picture } from "../../models/pic";
+import { ProfilePage } from '../profile/profile';
 
 
 @Component({
@@ -74,7 +71,7 @@ export class DashboardPage {
 
   openEditProfile(profileData: Profile){
     console.log(profileData.firstname);
-    this.navCtrl.push(EditProfilePage, {profileId:profileData.$key});
+    this.navCtrl.push(ProfilePage, {profileId:profileData.$key});
   }
 /*openEditProfile(profile: Profile){
     this.navCtrl.push(EditProfilePage, {profileId: profile.$key});
